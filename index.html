@@ -251,6 +251,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/16/CPU缓存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="傅鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="诗万首，酒千觞">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/16/CPU缓存/" itemprop="url">CPU缓存</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-16T18:58:16+08:00">
+                2018-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统原理/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统原理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="CPU缓存"><a href="#CPU缓存" class="headerlink" title="CPU缓存"></a>CPU缓存</h1><p>随着CPU的频率不断提升，而内存的访问速度却没有质的突破，为了弥补访问内存的速度慢，充分发挥CPU的计算资源，提高CPU整体吞吐量，在CPU与内存之间引入了一级Cache。 一般来说，一级Cache可以分为一级数据缓存（Data Cache，D-Cache）和一级指令缓存（Instruction Cache，I-Cache）。随着热点数据体积越来越大，一级Cache L1已经不满足发展的要求，引入了二级Cache L2，三级Cache L3。</p>
+<p><img src="/2018/08/16/CPU缓存/CPU缓存.png" alt="img"></p>
+<h1 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h1><p>CPU缓存是由很多个缓存行组成的。每个缓存行通常是64字节，并且它有效地引用主内存中的一块儿地址，并拷贝主内存对应地址中的数据。缓存行是CPU与主内存数据交换的最小单位。CPU每次从主存中拉取数据时，会把相邻的数据也存入同一个缓存行。</p>
+<h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a>伪共享</h1><p><img src="/2018/08/16/CPU缓存/伪共享.png" alt="img"></p>
+<p>数据X、Y、Z被加载到同一Cache Line中，线程A在Core1修改X，线程B在Core2上修改Y。根据MESI大法，假设是Core1是第一个发起操作的CPU核，Core1上的L1 Cache Line由S（共享）状态变成M（修改，脏数据）状态，然后告知其他的CPU核，图例则是Core2，引用同一地址的Cache Line已经无效了；当Core2发起写操作时，首先导致Core1将X写回主存，Cache Line状态由M变为I（无效），而后才是Core2从主存重新读取该地址内容，Cache Line状态由I变成E（独占），最后进行修改Y操作， Cache Line从E变成M。可见多个线程操作在同一Cache Line上的不同数据，相互竞争同一Cache Line，导致线程彼此牵制影响，变成了串行程序，降低了并发性。此时我们则需要将共享在多线程间的数据进行隔离，使他们不在同一个Cache Line上，从而提升多线程的性能。</p>
+<h1 id="解决伪共享方案"><a href="#解决伪共享方案" class="headerlink" title="解决伪共享方案"></a>解决伪共享方案</h1><p><img src="/2018/08/16/CPU缓存/伪共享_方案1.png" alt="img"></p>
+<h2 id="1、填充方式"><a href="#1、填充方式" class="headerlink" title="1、填充方式"></a>1、填充方式</h2><p>正确的方式应该将该对象属性分组，将一起变化的放在一组，与其他属性无关的属性放到一组，将不变的属性放到一组。这样当每次对象变化时，不会带动所有的属性重新加载缓存，提升了读取效率。在JDK1.8以前，我们一般是在属性间增加长整型变量来分隔每一组属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataPadding</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> a1,a2,a3,a4,a5,a6,a7,a8;<span class="comment">//防止与前一个对象产生伪共享</span></span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    <span class="keyword">long</span> modifyTime;</span><br><span class="line">    <span class="keyword">long</span> b1,b2,b3,b4,b5,b6,b7,b8;<span class="comment">//防止不相关变量伪共享;</span></span><br><span class="line">    <span class="keyword">boolean</span> flag;</span><br><span class="line">    <span class="keyword">long</span> c1,c2,c3,c4,c5,c6,c7,c8;<span class="comment">//</span></span><br><span class="line">    <span class="keyword">long</span> createTime;</span><br><span class="line">    <span class="keyword">char</span> key;</span><br><span class="line">    <span class="keyword">long</span> d1,d2,d3,d4,d5,d6,d7,d8;<span class="comment">//防止与下一个对象产生伪共享</span></span><br></pre></td></tr></table></figure>
+<h2 id="2、Contended注解方式"><a href="#2、Contended注解方式" class="headerlink" title="2、Contended注解方式"></a>2、Contended注解方式</h2><p>在JDK1.8中，新增了一种注解@sun.misc.Contended，来使各个变量在Cache line中分隔开。注意，jvm需要添加参数-XX:-RestrictContended才能开启此功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类前加上代表整个类的每个变量都会在单独的cache line中</span></span><br><span class="line"><span class="meta">@sun</span>.misc.Contended</span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"restriction"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ContendedData</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    <span class="keyword">long</span> modifyTime;</span><br><span class="line">    <span class="keyword">boolean</span> flag;</span><br><span class="line">    <span class="keyword">long</span> createTime;</span><br><span class="line">    <span class="keyword">char</span> key;</span><br><span class="line">&#125;</span><br><span class="line">或者这种：</span><br><span class="line"><span class="comment">// 属性前加上时需要加上组标签</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"restriction"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ContendedGroupData</span> </span>&#123;</span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended(<span class="string">"group1"</span>)</span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended(<span class="string">"group1"</span>)</span><br><span class="line">    <span class="keyword">long</span> modifyTime;</span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended(<span class="string">"group2"</span>)</span><br><span class="line">    <span class="keyword">boolean</span> flag;</span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended(<span class="string">"group3"</span>)</span><br><span class="line">    <span class="keyword">long</span> createTime;</span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended(<span class="string">"group3"</span>)</span><br><span class="line">    <span class="keyword">char</span> key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2018/08/16/CPU缓存/伪共享_方案2.png" alt="img"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/16/AQS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -814,7 +966,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -825,7 +977,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -836,7 +988,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
