@@ -73,6 +73,8 @@
 
 
 
+  
+
 
   <link rel="alternate" href="/atom.xml" title="有志者" type="application/atom+xml" />
 
@@ -81,13 +83,20 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="有志者">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="ExecutorEexecutor作为灵活且强大的异步执行框架，其支持多种不同类型的任务执行策略，提供了一种标准的方法将任务的提交过程和执行过程解耦开发，基于生产者-消费者模式，其提交任务的线程相当于生产者，执行任务的线程相当于消费者，并用Runnable来表示任务，Executor的实现还提供了对生命周期的支持，以及统计信息收集，应用程序管理机制和性能监视等机制。 ExecutorService">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程池">
+<meta property="og:url" content="http://yoursite.com/2018/08/16/线程池/index.html">
 <meta property="og:site_name" content="有志者">
+<meta property="og:description" content="ExecutorEexecutor作为灵活且强大的异步执行框架，其支持多种不同类型的任务执行策略，提供了一种标准的方法将任务的提交过程和执行过程解耦开发，基于生产者-消费者模式，其提交任务的线程相当于生产者，执行任务的线程相当于消费者，并用Runnable来表示任务，Executor的实现还提供了对生命周期的支持，以及统计信息收集，应用程序管理机制和性能监视等机制。 ExecutorService">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LAQdPfbWl2dOqgk9esX%2F-LAg4sZ0GzpDgPXORtaz%2F-LAg5IZx4sfg_Nl7N8wZ%2Fexecutor.jpg?alt=media&token=99cc6bae-da88-4a87-a75d-fc275c22d6a2">
+<meta property="og:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LAQdPfbWl2dOqgk9esX%2F-LAg4sZ0GzpDgPXORtaz%2F-LAg5TOb1WZoFzPuYsMC%2Fliucheng.jpg?alt=media&token=c8a8a94a-7260-4c43-a8fd-5e2ffbd29753">
+<meta property="og:updated_time" content="2018-08-16T09:07:15.897Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="有志者">
+<meta name="twitter:title" content="线程池">
+<meta name="twitter:description" content="ExecutorEexecutor作为灵活且强大的异步执行框架，其支持多种不同类型的任务执行策略，提供了一种标准的方法将任务的提交过程和执行过程解耦开发，基于生产者-消费者模式，其提交任务的线程相当于生产者，执行任务的线程相当于消费者，并用Runnable来表示任务，Executor的实现还提供了对生命周期的支持，以及统计信息收集，应用程序管理机制和性能监视等机制。 ExecutorService">
+<meta name="twitter:image" content="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LAQdPfbWl2dOqgk9esX%2F-LAg4sZ0GzpDgPXORtaz%2F-LAg5IZx4sfg_Nl7N8wZ%2Fexecutor.jpg?alt=media&token=99cc6bae-da88-4a87-a75d-fc275c22d6a2">
 
 
 
@@ -117,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/08/16/线程池/"/>
 
 
 
 
 
-  <title>有志者</title>
+  <title>线程池 | 有志者</title>
   
 
 
@@ -142,8 +151,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,9 +244,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -268,9 +276,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/16/线程池/" itemprop="url">线程池</a></h1>
+          <h1 class="post-title" itemprop="name headline">线程池</h1>
         
 
         <div class="post-meta">
@@ -320,9 +326,7 @@
       
 
       
-        
-          
-            <h1 id="Executor"><a href="#Executor" class="headerlink" title="Executor"></a>Executor</h1><p>Eexecutor作为灵活且强大的异步执行框架，其支持多种不同类型的任务执行策略，提供了一种标准的方法将任务的提交过程和执行过程解耦开发，基于生产者-消费者模式，其提交任务的线程相当于生产者，执行任务的线程相当于消费者，并用Runnable来表示任务，Executor的实现还提供了对生命周期的支持，以及统计信息收集，应用程序管理机制和性能监视等机制。</p>
+        <h1 id="Executor"><a href="#Executor" class="headerlink" title="Executor"></a>Executor</h1><p>Eexecutor作为灵活且强大的异步执行框架，其支持多种不同类型的任务执行策略，提供了一种标准的方法将任务的提交过程和执行过程解耦开发，基于生产者-消费者模式，其提交任务的线程相当于生产者，执行任务的线程相当于消费者，并用Runnable来表示任务，Executor的实现还提供了对生命周期的支持，以及统计信息收集，应用程序管理机制和性能监视等机制。</p>
 <h1 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h1><p>ExecutorService是Executor直接的扩展接口，也是最常用的线程池接口，我们通常见到的线程池定时任务线程池都是它的实现类。</p>
 <p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LAQdPfbWl2dOqgk9esX%2F-LAg4sZ0GzpDgPXORtaz%2F-LAg5IZx4sfg_Nl7N8wZ%2Fexecutor.jpg?alt=media&amp;token=99cc6bae-da88-4a87-a75d-fc275c22d6a2" alt="img"></p>
 <h1 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h1><p>java的线程池支持主要通过ThreadPoolExecutor来实现，我们使用的ExecutorService的各种线程池策略都是基于ThreadPoolExecutor实现的，所以ThreadPoolExecutor十分重要。要弄明白各种线程池策略，必须先弄明白ThreadPoolExecutor。</p>
@@ -406,8 +410,6 @@
 <h2 id="对于IO密集型任务"><a href="#对于IO密集型任务" class="headerlink" title="对于IO密集型任务"></a>对于IO密集型任务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">N = 线程数量</span><br><span class="line">C = CPU数量</span><br><span class="line">P = CPU利用率</span><br><span class="line">CT = 计算时间</span><br><span class="line">WT = IO等待时间</span><br><span class="line">N = C * P * (1 + CT/WT)</span><br></pre></td></tr></table></figure>
 <p>当然，CPU周期并不是唯一影响线程池大小饿资源，还包括内存、文件句柄、套接字句柄和数据库连接等。计算这些资源对线程池的约束条件是更容易的：计算每个任务对该资源的需求量，然后用该资源的可用总量除以每个任务的需求量，所得结果就是线程池大小的上线。</p>
 
-          
-        
       
     </div>
     
@@ -424,12 +426,12 @@
       
 
       
+      
+      
 
       
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -439,10 +441,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -450,6 +453,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -470,8 +477,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -520,6 +536,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Executor"><span class="nav-number">1.</span> <span class="nav-text">Executor</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ExecutorService"><span class="nav-number">2.</span> <span class="nav-text">ExecutorService</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">3.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#构造参数说明"><span class="nav-number">3.1.</span> <span class="nav-text">构造参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行任务流程"><span class="nav-number">3.2.</span> <span class="nav-text">执行任务流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拒绝策略"><span class="nav-number">3.3.</span> <span class="nav-text">拒绝策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">3.4.</span> <span class="nav-text">生命周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Executors"><span class="nav-number">4.</span> <span class="nav-text">Executors</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#newFixedThreadPool"><span class="nav-number">4.1.</span> <span class="nav-text">newFixedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#newCachedThreadPool"><span class="nav-number">4.2.</span> <span class="nav-text">newCachedThreadPool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#newSingleThreadExecutor"><span class="nav-number">4.3.</span> <span class="nav-text">newSingleThreadExecutor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#newScheduledThreadPool"><span class="nav-number">4.4.</span> <span class="nav-text">newScheduledThreadPool</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ScheduledExecutorService"><span class="nav-number">4.4.1.</span> <span class="nav-text">ScheduledExecutorService</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置线程池的大小"><span class="nav-number">5.</span> <span class="nav-text">设置线程池的大小</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对于计算密集型任务"><span class="nav-number">5.1.</span> <span class="nav-text">对于计算密集型任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对于IO密集型任务"><span class="nav-number">5.2.</span> <span class="nav-text">对于IO密集型任务</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -653,6 +685,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
