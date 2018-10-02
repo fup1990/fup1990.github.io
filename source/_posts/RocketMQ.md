@@ -91,41 +91,24 @@ public void handleDiskFlush(AppendMessageResult result, PutMessageResult putMess
 
 ## 主从同步
 
-RocketMQ的Broker分为Master和Slave两个角色。Master提供读写服务，而Slave只提供读服务。因此，在Master接收到消息后，要把消息同步到Slave上，这样一旦Master宕机，Slave依然可以提供服务。主从同步分为：
-
-- 同步复制方式：Master接收到消息之后，立即同步给Slave，Master和Slave均写入成功之后返回；
-- 异步复制方式：只要Master写入成功之后就返回成功，由同步线程异步执行同步操作。
+RocketMQ的Broker分为Master和Slave两个角色。Master提供读写服务，而Slave只提供读服务。因此，在Master接收到消息后，要把消息同步到Slave上，这样一旦Master宕机，Slave依然可以提供服务。
 
 ### 实现
 
-```java
-public void handleHA(AppendMessageResult result, PutMessageResult putMessageResult, MessageExt messageExt) {
-    if (BrokerRole.SYNC_MASTER == this.defaultMessageStore.getMessageStoreConfig().getBrokerRole()) {   //同步主节点
-        HAService service = this.defaultMessageStore.getHaService();
-        if (messageExt.isWaitStoreMsgOK()) {
-            // Determine whether to wait
-            if (service.isSlaveOK(result.getWroteOffset() + result.getWroteBytes())) {
-                GroupCommitRequest request = new GroupCommitRequest(result.getWroteOffset() + result.getWroteBytes());
-                service.putRequest(request);
-                service.getWaitNotifyObject().wakeupAll();
-                boolean flushOK =
-                    request.waitForFlush(this.defaultMessageStore.getMessageStoreConfig().getSyncFlushTimeout());
-                if (!flushOK) {
-                    log.error("do sync transfer other node, wait return, but failed, topic: " + messageExt.getTopic() + " tags: "
-                        + messageExt.getTags() + " client address: " + messageExt.getBornHostNameString());
-                    putMessageResult.setPutMessageStatus(PutMessageStatus.FLUSH_SLAVE_TIMEOUT);
-                }
-            }
-            // Slave problem
-            else {
-                // Tell the producer, slave not available
-                putMessageResult.setPutMessageStatus(PutMessageStatus.SLAVE_NOT_AVAILABLE);
-            }
-        }
-    }
+Slave通过HAClient类向Master报告当前的偏移量，并接收Master的同步数据，写入CommitLog完成同步。
 
-}
-```
+Master会为每个Slave创建一个HAConnection连接。HAConnection中维护了两个线程：
+
+- ReadSocketService：处理Slave发送的同步请求，接收Slave的偏移量；
+
+- WriteSocketService：根据Slave的偏移量获取需要同步数据的位置，从CommitLog中加载数据传输给Slave。
+
+### 分类
+
+主从同步分为：
+
+- 同步复制方式：Master接收到消息之后，立即同步给Slave，Master和Slave均写入成功之后返回；
+- 异步复制方式：只要Master写入成功之后就返回成功，由同步线程异步执行同步操作。
 
 ## 最佳实践
 
