@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JVM,监控,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="jps显示系统内所有虚拟机进程。    选项 作用     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传递给主类main()函数的参数   -l 输出主类的全名，如果进程执行的是jar包，输出jar路径   -v 输出虚拟机进程启动时jvm参数    12345678[root ~]$ jps -l87799 org.apache.catalina.startup.Bo">
+<meta name="keywords" content="JVM,监控">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟机监控工具">
+<meta property="og:url" content="http://yoursite.com/2018/09/04/虚拟机监控工具/index.html">
+<meta property="og:site_name" content="何足道哉">
+<meta property="og:description" content="jps显示系统内所有虚拟机进程。    选项 作用     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传递给主类main()函数的参数   -l 输出主类的全名，如果进程执行的是jar包，输出jar路径   -v 输出虚拟机进程启动时jvm参数    12345678[root ~]$ jps -l87799 org.apache.catalina.startup.Bo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/jvisualvm.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/top.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/ps.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/printf.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/jstack.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/top2.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/jmap.png">
+<meta property="og:updated_time" content="2019-01-09T03:28:23.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="虚拟机监控工具">
+<meta name="twitter:description" content="jps显示系统内所有虚拟机进程。    选项 作用     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传递给主类main()函数的参数   -l 输出主类的全名，如果进程执行的是jar包，输出jar路径   -v 输出虚拟机进程启动时jvm参数    12345678[root ~]$ jps -l87799 org.apache.catalina.startup.Bo">
+<meta name="twitter:image" content="http://yoursite.com/2018/09/04/虚拟机监控工具/jvisualvm.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/04/虚拟机监控工具/">
+
+
+
+
+
+  <title>虚拟机监控工具 | 何足道哉</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">何足道哉</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/04/虚拟机监控工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何足道哉">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">虚拟机监控工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-04T19:43:49+08:00">
+                2018-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h1><p>显示系统内所有虚拟机进程。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-q</td>
+<td>只输出LVMID，省略主类的名称</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>输出虚拟机进程启动时传递给主类main()函数的参数</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>输出主类的全名，如果进程执行的是jar包，输出jar路径</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>输出虚拟机进程启动时jvm参数</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root ~]$ jps -l</span><br><span class="line">87799 org.apache.catalina.startup.Bootstrap</span><br><span class="line">319117 org.apache.catalina.startup.Bootstrap</span><br><span class="line">182013 com.creditease.mscp.boot.MSCPBoot</span><br><span class="line">241863 org.apache.catalina.startup.Bootstrap</span><br><span class="line">262825 org.apache.catalina.startup.Bootstrap</span><br><span class="line">82480 org.apache.catalina.startup.Bootstrap</span><br><span class="line">261415 sun.tools.jps.Jps</span><br></pre></td></tr></table></figure>
+<h1 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h1><p>用于收集虚拟机各方面的运行数据。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-class</td>
+<td>监视类的装载、卸载数量以及类的装载总空间和耗费时间等</td>
+</tr>
+<tr>
+<td>-gc</td>
+<td>监视Java堆，包含eden、2个survivor区、old区和永久带区域的容量、已用空间、GC时间合计等信息</td>
+</tr>
+<tr>
+<td>-gccapcity</td>
+<td>监视内容与-gc相同，但输出主要关注Java区域用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gcutil</td>
+<td>监视内容与-gc相同，但输出主要关注已使用空间占总空间的百分比</td>
+</tr>
+<tr>
+<td>-gccause</td>
+<td>与-gcutil输出信息相同，额外输出导致上次GC产生的原因</td>
+</tr>
+<tr>
+<td>-gcnew</td>
+<td>监控新生代的GC情况</td>
+</tr>
+<tr>
+<td>-gcnewcapacity</td>
+<td>与-gcnew监控信息相同，输出主要关注使用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gcold</td>
+<td>监控老生代的GC情况</td>
+</tr>
+<tr>
+<td>-gcoldcapacity</td>
+<td>与-gcold监控信息相同，输出主要关注使用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gcpermcapacity</td>
+<td>输出永久带用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-compiler</td>
+<td>输出JIT编译器编译过的方法、耗时信息</td>
+</tr>
+<tr>
+<td>-printcompilation</td>
+<td>输出已经被JIT编译的方法</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[weblogic@vm-10-112-180-180 ~]$ jstat -gc 87799</span><br><span class="line"> S0C    S1C    S0U    S1U      EC       EU        OC         OU       PC     PU    YGC     YGCT    FGC    FGCT     GCT   </span><br><span class="line">13056.0 13056.0 301.9   0.0   104960.0 15747.8  3014656.0   791584.0  131072.0 83501.8   2786   23.422   0      0.000   23.422</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>S0C</th>
+<th>当前survivor space 0 的总容量 (KB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1C</td>
+<td>当前survivor space 1 的总容量 (KB)</td>
+</tr>
+<tr>
+<td>S0U</td>
+<td>当前survivor space 0 已使用的容量 (KB)</td>
+</tr>
+<tr>
+<td>S1U</td>
+<td>当前survivor space 1 已使用的容量 (KB)</td>
+</tr>
+<tr>
+<td>EC</td>
+<td>当前 eden space 总容量 (KB)</td>
+</tr>
+<tr>
+<td>EU</td>
+<td>当前eden space已经使用的容量 (KB)</td>
+</tr>
+<tr>
+<td>OC</td>
+<td>当前 old space 总容量 (KB)</td>
+</tr>
+<tr>
+<td>OU</td>
+<td>当前old space 已使用容量(KB)</td>
+</tr>
+<tr>
+<td>PC</td>
+<td>当前 permanent space 总容量(KB)</td>
+</tr>
+<tr>
+<td>PU</td>
+<td>当前 permanent space 已使用容量 (KB)</td>
+</tr>
+<tr>
+<td>YGC</td>
+<td>从应用启动时到现在，年轻代young generation 发生GC Events的总次数</td>
+</tr>
+<tr>
+<td>YGCT</td>
+<td>从应用启动时到现在， 年轻代Young generation 垃圾回收的总耗时</td>
+</tr>
+<tr>
+<td>FGC</td>
+<td>从应用启动时到现在， full GC事件总次数</td>
+</tr>
+<tr>
+<td>FGCT</td>
+<td>从应用启动时到现在， Full sc总耗时</td>
+</tr>
+<tr>
+<td>GCT</td>
+<td>从应用启动时到现在， 垃圾回收总时间. GCT=YGCT+FGCT</td>
+</tr>
+</tbody>
+</table>
+<h1 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h1><p>显示虚拟机配置信息。实时的查看和调整JVM的各项参数。可以使用-flag [+/-]name或者-flag name=value修改一部分运行期可写的虚拟机参数。</p>
+<p>输出gc日志</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:\&gt;jinfo -flag +PrintGCDetails 4192</span><br><span class="line"></span><br><span class="line">D:\&gt;jinfo -flag +PrintGC 4192</span><br></pre></td></tr></table></figure>
+<h1 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h1><p>生成虚拟机的内存转储快照（heapdump文件）</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-dump</td>
+<td>生产Java堆转储快照。格式为：-dump[live, ]format=b, file=<filename>。其中live子参数说明是否只dump存活的对象。</filename></td>
+</tr>
+<tr>
+<td>-finalizerinfo</td>
+<td>显示在F-Queue中等待finalizer线程执行finalize方法的对象。只在Linux/Solaris平台下有效。</td>
+</tr>
+<tr>
+<td>-heap</td>
+<td>显示Java堆详细信息，如使用哪种回收器、参数配置、分代情况等。只在Linux/Solaris平台下有效。</td>
+</tr>
+<tr>
+<td>-histo</td>
+<td>显示堆中对象统计信息，包括类、实例数量、合计容量。-histo:live，这个命令执行，JVM会先触发gc，然后再统计信息。</td>
+</tr>
+<tr>
+<td>-permstat</td>
+<td>以Classloader为统计口径显示永久代内存状态。只在Linux/Solaris平台下有效。</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>当虚拟机进程对-dump选项没有响应时，可使用这个选项强制生产dump快照。只在Linux/Solaris平台下有效。</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">[root]$</span> jmap -dump:format=b,file=dump.hprof 182013</span><br><span class="line">Dumping heap to /app/weblogic/pop-interface/logs/dump.hprof ...</span><br><span class="line">Heap dump.hprof file created</span><br><span class="line"><span class="meta">[root]$</span> ll</span><br><span class="line">total 133652</span><br><span class="line">drwxr-xr-x 2 weblogic weblogic    40960 May 17 07:10 bak</span><br><span class="line">-rw-rw-r-- 1 weblogic weblogic 42591197 May 17 15:56 catalina.2018-05-17.out</span><br><span class="line">-rw------- 1 weblogic weblogic 92541638 May 17 15:57 dump.hprof</span><br><span class="line">-rw-rw-r-- 1 weblogic weblogic  1638325 May 17 15:56 gc.log</span><br><span class="line">-rw-rw-r-- 1 weblogic weblogic    23925 May 17 15:57 localhost_access_log.2018-05-17.log</span><br></pre></td></tr></table></figure>
+<p>可以使用<strong>jvisualvm</strong>来分析生产的dump文件。</p>
+<p><img src="/2018/09/04/虚拟机监控工具/jvisualvm.png" alt="img"></p>
+<h1 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h1><p>显示虚拟机上的线程快照。线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合，生成线程快照的主要目的就定位线程出现长时间停顿的原因，如线程死锁、死循环等。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack pid</span><br></pre></td></tr></table></figure>
+<h1 id="jcmd"><a href="#jcmd" class="headerlink" title="jcmd"></a>jcmd</h1><p>在JDK1.7以后，新增了一个命令行工具 jcmd。他是一个多功能的工具，可以用它来导出堆、查看Java进程、导出线程信息、执行GC、还可以进行采样分析。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jcmd -l	<span class="comment">#查看所有的进程列表信息。类似jps</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jcmd pid help	<span class="comment">#列出当前运行的java进程可以执行的操作，详细操作请看下表</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>常用命令</th>
+<th>详情</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VM.unlock_commercial_features</td>
+<td>取消锁定商业功能。</td>
+<td>jcmd pid VM.unlock_commercial_features</td>
+</tr>
+<tr>
+<td>JFR.start</td>
+<td>启动jfr。开启去必须线取消锁定商业功能。</td>
+<td>jcmd pid JFR.start name=abc,duration=120s</td>
+</tr>
+<tr>
+<td>JFR.dump</td>
+<td>等待至少duration后，执行命令（注意，文件名必须为.jfr后缀），使用jmc打开生成的jfr文件。</td>
+<td>jcmd pid JFR.dump name=abc,duration=120s filename=abc.jfr</td>
+</tr>
+<tr>
+<td>JFR.stop</td>
+<td>停止jfr。</td>
+<td>jcmd pid JFR.stop name=abc,duration=120s</td>
+</tr>
+<tr>
+<td>JFR.check</td>
+<td>检查JFR状态。</td>
+<td>jcmd pid JFR.check name=abc,duration=120s</td>
+</tr>
+<tr>
+<td>GC.class_histogram</td>
+<td>查看系统中类统计信息。这里和jmap -histo pid的效果是一样的。这个可以查看每个类的实例数量和占用空间大小。</td>
+<td>jcmd pid GC.class_histogram</td>
+</tr>
+<tr>
+<td>Thread.print</td>
+<td>查看线程堆栈信息。该命令jstack命令。</td>
+<td>jcmd pid Thread.print</td>
+</tr>
+<tr>
+<td>GC.heap_dump</td>
+<td>查看 JVM 的Heap Dump。跟 jmap命令：jmap -dump:format=b,file=heapdump.phrof pid 效果一样。导出的 dump 文件，可以使用MAT 或者 Visual VM 等工具进行分析。</td>
+<td>jcmd pid GC.heap_dump dump.hprof</td>
+</tr>
+<tr>
+<td>VM.system_properties</td>
+<td>查看 JVM 的属性信息。</td>
+<td>jcmd pid VM.system_properties</td>
+</tr>
+<tr>
+<td>VM.flags</td>
+<td>查看 JVM 的启动参数。</td>
+<td>jcmd pid VM.flags</td>
+</tr>
+<tr>
+<td>VM.command_line</td>
+<td>查看 JVM 的启动命令行。</td>
+<td>jcmd pid VM.command_line</td>
+</tr>
+<tr>
+<td>GC.run_finalization</td>
+<td>执行一次finalization操作，相当于执行java.lang.System.runFinalization()。</td>
+<td>jcmd pid GC.run_finalization</td>
+</tr>
+<tr>
+<td>GC.run</td>
+<td>对 JVM 执行 java.lang.System.gc()。告诉垃圾收集器打算进行垃圾收集，而垃圾收集器进不进行收集是不确定的。</td>
+<td>jcmd pid GC.run</td>
+</tr>
+<tr>
+<td>PerfCounter.print</td>
+<td>查看 JVM 性能相关的参数。</td>
+<td>jcmd pid PerfCounter.print</td>
+</tr>
+<tr>
+<td>VM.version</td>
+<td>查看目标jvm进程的版本信息。</td>
+<td>jcmd pid VM.version</td>
+</tr>
+</tbody>
+</table>
+<h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><h2 id="查看GC-log"><a href="#查看GC-log" class="headerlink" title="查看GC log"></a>查看GC log</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2018-06-04T16:12:17.393+0800: 336894.721: [GC2018-06-04T16:12:17.393+0800: 336894.721: [ParNew: 1677824K-&gt;7137K(1887488K), 0.0167290 secs] 2058871K-&gt;388184K(3984640K), 0.0172050 secs] [Times: user=0.10 sys=0.00, real=0.02 secs] </span><br><span class="line">2018-06-04T16:12:39.083+0800: 336916.411: [Full GC2018-06-04T16:12:39.083+0800: 336916.411: [CMS: 381047K-&gt;380283K(2097152K), 1.3115720 secs] 481767K-&gt;380283K(3984640K), [CMS Perm : 171267K-&gt;171267K(285428K)], 1.3120450 secs] [Times: user=1.31 sys=0.00, real=1.31 secs] </span><br><span class="line"></span><br><span class="line">[ParNew（使用ParNew作为年轻代的垃圾回收期）: 43296K（年轻代垃圾回收前的大小）-&gt;7006K（年轻代垃圾回收以后的大小）(47808K)（年轻代的总大小）, 0.0136826 secs（回收时间）] 44992K（堆区垃圾回收前的大小）-&gt;8702K（堆区垃圾回收后的大小）(252608K)（堆区总大小）, 0.0137904 secs（回收时间）] [Times: user=0.03（Young GC用户耗时） sys=0.00（Young GC系统耗时）, real=0.02 secs（Young GC实际耗时）]</span><br></pre></td></tr></table></figure>
+<h2 id="高CPU占用"><a href="#高CPU占用" class="headerlink" title="高CPU占用"></a>高CPU占用</h2><p>一个应用占用CPU很高，除了确实是计算密集型应用之外，通常原因都是出现了死循环或者是因为内存不足和导致频繁的full gc。</p>
+<h3 id="1、查看当前cpu的使用情况"><a href="#1、查看当前cpu的使用情况" class="headerlink" title="1、查看当前cpu的使用情况"></a>1、查看当前cpu的使用情况</h3><p>top命令</p>
+<p><img src="/2018/09/04/虚拟机监控工具/top.png" alt="img"></p>
+<h3 id="2、查看当前pid下的线程情况"><a href="#2、查看当前pid下的线程情况" class="headerlink" title="2、查看当前pid下的线程情况"></a>2、查看当前pid下的线程情况</h3><p>ps -mp pid -o THREAD,tid,time</p>
+<p><img src="/2018/09/04/虚拟机监控工具/ps.png" alt="img"></p>
+<h3 id="3、将线程id转换为16进制"><a href="#3、将线程id转换为16进制" class="headerlink" title="3、将线程id转换为16进制"></a>3、将线程id转换为16进制</h3><p>printf “%x\n” tid</p>
+<p><img src="/2018/09/04/虚拟机监控工具/printf.png" alt="img"></p>
+<h3 id="4、打印线程快照信息"><a href="#4、打印线程快照信息" class="headerlink" title="4、打印线程快照信息"></a>4、打印线程快照信息</h3><p>jstack pid |grep tid -A 30</p>
+<p><img src="/2018/09/04/虚拟机监控工具/jstack.png" alt="img"></p>
+<h2 id="高内存占用"><a href="#高内存占用" class="headerlink" title="高内存占用"></a>高内存占用</h2><h3 id="1、查看当前内存的使用情况"><a href="#1、查看当前内存的使用情况" class="headerlink" title="1、查看当前内存的使用情况"></a>1、查看当前内存的使用情况</h3><p>命令top</p>
+<p><img src="/2018/09/04/虚拟机监控工具/top2.png" alt="img"></p>
+<h3 id="2、查看当前内存活跃的对象和占用内存大小"><a href="#2、查看当前内存活跃的对象和占用内存大小" class="headerlink" title="2、查看当前内存活跃的对象和占用内存大小"></a>2、查看当前内存活跃的对象和占用内存大小</h3><p>jmap -histo:live pid</p>
+<p><img src="/2018/09/04/虚拟机监控工具/jmap.png" alt="img"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/监控/" rel="tag"># 监控</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/31/disruptor/" rel="next" title="disruptor">
+                <i class="fa fa-chevron-left"></i> disruptor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/27/多路复用/" rel="prev" title="多路复用">
+                多路复用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Doe</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jps"><span class="nav-number">1.</span> <span class="nav-text">jps</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jstat"><span class="nav-number">2.</span> <span class="nav-text">jstat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jinfo"><span class="nav-number">3.</span> <span class="nav-text">jinfo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jmap"><span class="nav-number">4.</span> <span class="nav-text">jmap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jstack"><span class="nav-number">5.</span> <span class="nav-text">jstack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jcmd"><span class="nav-number">6.</span> <span class="nav-text">jcmd</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实践"><span class="nav-number">7.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看GC-log"><span class="nav-number">7.1.</span> <span class="nav-text">查看GC log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高CPU占用"><span class="nav-number">7.2.</span> <span class="nav-text">高CPU占用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、查看当前cpu的使用情况"><span class="nav-number">7.2.1.</span> <span class="nav-text">1、查看当前cpu的使用情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查看当前pid下的线程情况"><span class="nav-number">7.2.2.</span> <span class="nav-text">2、查看当前pid下的线程情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、将线程id转换为16进制"><span class="nav-number">7.2.3.</span> <span class="nav-text">3、将线程id转换为16进制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、打印线程快照信息"><span class="nav-number">7.2.4.</span> <span class="nav-text">4、打印线程快照信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高内存占用"><span class="nav-number">7.3.</span> <span class="nav-text">高内存占用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、查看当前内存的使用情况"><span class="nav-number">7.3.1.</span> <span class="nav-text">1、查看当前内存的使用情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、查看当前内存活跃的对象和占用内存大小"><span class="nav-number">7.3.2.</span> <span class="nav-text">2、查看当前内存活跃的对象和占用内存大小</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
