@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/12/13/JDK1-8/peek.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/12/13/JDK1-8/limit.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/12/13/JDK1-8/skip.jpg">
-<meta property="og:updated_time" content="2019-01-15T09:24:20.458Z">
+<meta property="og:updated_time" content="2019-03-14T06:36:56.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lambda、Stream">
 <meta name="twitter:description" content="Lambda语法 参数类型省略–绝大多数情况，编译器都可以从上下文环境中推断出lambda表达式的参数类型。 123456(param1,param2, ..., paramN) -&amp;gt; &amp;#123;	statment1;    statment2;    // ......    return statmentN;&amp;#125;  当lambda表达式的参数个数只有一个，可以省略小括号 123">
@@ -436,18 +436,36 @@
 </li>
 <li><p>skip: 返回一个丢弃原Stream的前N个元素后剩下元素组成的新Stream，如果原Stream中包含的元素个数小于N，那么返回空Stream。</p>
 <p><img src="/2018/12/13/JDK1-8/skip.jpg" alt></p>
-<h2 id="Reduce-Stream"><a href="#Reduce-Stream" class="headerlink" title="Reduce Stream"></a>Reduce Stream</h2><p>聚合数据流操作。在创建和转换阶段并不会对流数据进行处理，而是在合并阶段一次性处理。</p>
-</li>
+<h2 id="聚合Stream"><a href="#聚合Stream" class="headerlink" title="聚合Stream"></a>聚合Stream</h2><p>聚合数据流操作。在创建和转换阶段并不会对流数据进行处理，而是在合并阶段一次性处理。</p>
+<ol>
 <li><p>collect: 收集数据到新的容器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">collect</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().map(Object::toString).collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li>reduce: 汇聚</li>
-<li>count: 计数</li>
-<li>forEach: 遍历流</li>
-<li>findFirst: 返回第一项</li>
-<li>findAny: 返回任意一项</li>
-<li>allMatch: 所有元素全部匹配</li>
-<li>noneMatch: 所以元素全部不匹配</li>
-<li>anyMatch: 任意一个元素匹配</li>
+<li><p>reduce: 汇聚，可以从一组元素中生成一个值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求和</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Integer <span class="title">sum</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().reduce(<span class="number">0</span> <span class="comment">/*初始值*/</span>, (sum <span class="comment">/*中间值*/</span>, num <span class="comment">/*当前值*/</span>) -&gt; sum + num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>count: 计数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Long <span class="title">count</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().count();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>forEach: 遍历流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">forEach</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    list.forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>findFirst: 返回第一项，返回Optional对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Optional <span class="title">findFirst</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().findFirst();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>findAny: 返回任意一项，返回Optional对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Optional <span class="title">findAny</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().findAny();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>allMatch: 所有元素全部匹配</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Boolean <span class="title">allMatch</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().allMatch(i -&gt; i &gt; <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>noneMatch: 所以元素全部不匹配</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Boolean <span class="title">noneMatch</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> list.stream().noneMatch(i -&gt; i &gt; <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>anyMatch: 任意一个元素匹配</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public Boolean anyMatch(List&lt;Integer&gt; list) &#123;</span><br><span class="line">    return list.stream().anyMatch(i -&gt; i &gt; 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
 </ol>
 
       
@@ -623,7 +641,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">1.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">1.2.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stream"><span class="nav-number">2.</span> <span class="nav-text">Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法-1"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Stream"><span class="nav-number">2.2.</span> <span class="nav-text">创建Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换Stream"><span class="nav-number">2.3.</span> <span class="nav-text">转换Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduce-Stream"><span class="nav-number">2.4.</span> <span class="nav-text">Reduce Stream</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法"><span class="nav-number">1.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">1.2.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stream"><span class="nav-number">2.</span> <span class="nav-text">Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法-1"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Stream"><span class="nav-number">2.2.</span> <span class="nav-text">创建Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换Stream"><span class="nav-number">2.3.</span> <span class="nav-text">转换Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合Stream"><span class="nav-number">2.4.</span> <span class="nav-text">聚合Stream</span></a></li></ol></li></ol></div>
             
 
           </div>
