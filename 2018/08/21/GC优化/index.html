@@ -88,7 +88,7 @@
 <meta property="og:description" content="通过收集GC信息，结合系统需求，明确性能目标（例如：停顿时间、GC时间在整个时间所占用的百分比），确定优化方案。例如选用合适的GC回收器、重新设置内存比例、调整JVM参数等。   调整堆的大小选择堆的大小其实是一种平衡。如果分配的堆过小，则程序的大部分时间可能都消耗在GC上，没有足够的时间去运行应用程序的逻辑。如果分配的堆过大，GC停顿消耗的时间取决于堆的大小，堆越大，停顿时间可能越长。设置堆内存">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/08/21/GC优化/内存区域.png">
-<meta property="og:updated_time" content="2018-10-20T10:51:33.221Z">
+<meta property="og:updated_time" content="2019-10-13T03:24:15.251Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GC优化">
 <meta name="twitter:description" content="通过收集GC信息，结合系统需求，明确性能目标（例如：停顿时间、GC时间在整个时间所占用的百分比），确定优化方案。例如选用合适的GC回收器、重新设置内存比例、调整JVM参数等。   调整堆的大小选择堆的大小其实是一种平衡。如果分配的堆过小，则程序的大部分时间可能都消耗在GC上，没有足够的时间去运行应用程序的逻辑。如果分配的堆过大，GC停顿消耗的时间取决于堆的大小，堆越大，停顿时间可能越长。设置堆内存">
@@ -290,7 +290,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/21/GC优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
+      <meta itemprop="name" content="傅鹏">
       <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -389,11 +389,19 @@
 <tbody>
 <tr>
 <td>-Xms</td>
-<td>设置初始值</td>
+<td>设置老年代初始值</td>
 </tr>
 <tr>
 <td>-Xmx</td>
-<td>设置最大值</td>
+<td>设置老年代最大值</td>
+</tr>
+<tr>
+<td>-Xmn</td>
+<td>设置青年代内存大小</td>
+</tr>
+<tr>
+<td>-Xss</td>
+<td>设置每个线程的堆栈大小。默认为1M。</td>
 </tr>
 </tbody>
 </table>
@@ -605,7 +613,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">John Doe</p>
+              <p class="site-author-name" itemprop="name">傅鹏</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -616,7 +624,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,7 +635,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -638,7 +646,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -695,7 +703,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">John Doe</span>
+  <span class="author" itemprop="copyrightHolder">傅鹏</span>
 
   
 </div>
