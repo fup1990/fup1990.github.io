@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[记一次生产故障排查]]></title>
+    <url>%2F2019%2F10%2F13%2F%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%94%9F%E4%BA%A7%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%2F</url>
+    <content type="text"><![CDATA[前言收到生产某服务多台机器报警，cpu飙到100%，系统无法正常提供服务。故开始排查问题。 分析一、分析cpu过高的原因tomcat进出把cpu占满了cpu。使用命令top top -H -p pid查到tomcat进程中相应的线程。将查到的线程号转成十六进制printf &quot;%x\n&quot; tid。然后使用命令jstack pid | tid -A 50查看线程快照。判断是因为频繁full gc引起的cpu飙高。 二、分析频繁full gc的原因首先先查看了jvm的堆内存配置。整个堆内存约为5.5个G，其中青年代分了3个G，老年代分了2.5个G。 再使用命令jstat -gcutil pid 1000查看每秒钟内存各区域占比和gc情况。发现S0、Eden和老年代已经被占满，导致一直full gc，并且每次full gc之后内存都没有被释放掉。内存释放不掉，服务很容易就OOM了。 为了方便分析排查，立刻保存了线程快照和堆dump。命令：jstack -l pid &gt; jstack.log、jmap -dump:format=b,file=temp.dump pid。保留完现场之后，先将几台问题机器重启，防止起OOM，保障服务的暂时可用。将dump下载到本地进行分析。 三、离线dump分析使用jdk自带的VisualVM分析dump。但是由于dump文件有7G多，因此使用命令jvisualvm -J-Xms1024m -J-Xmx2048m打开。 发现OrderAndPrice对象有11万多个实例，感觉非常的可疑。OrderAndPrice是个聚合对象，OrderDetail、OrderPreprice等都是其的属性。OrderAndPrice保存了订单的详细信息，查库获得。查看OrderAndPrice的实例，发现它被一个HashMap引用，而这个Map中竟然有一百万多个项，占用了1G多的内存。 原来这个Map是mybatis的一级缓存，默认是打开的。MyBatis一级缓存内部设计简单，只是一个没有容量限定的HashMap，在缓存的功能性上有所欠缺。因此，一般生产环境中常常被建议关闭Mybatis缓存。但近期没有调整过Mybatis缓存的开关，这次的故障的根本原因应该不在此。Mybatis缓存可以作为后期优化的一个点。关于Mybatis缓存详细的介绍在下文的引用中。 未完待续。 解决 关闭Mybatis缓存。 引用 https://tech.meituan.com/2018/01/19/mybatis-cache.html]]></content>
+      <categories>
+        <category>故障</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+        <tag>故障</tag>
+        <tag>mybatis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Lambda、Stream]]></title>
     <url>%2F2018%2F12%2F13%2FJDK1-8%2F</url>
     <content type="text"><![CDATA[Lambda语法 参数类型省略–绝大多数情况，编译器都可以从上下文环境中推断出lambda表达式的参数类型。 123456(param1,param2, ..., paramN) -&gt; &#123; statment1; statment2; // ...... return statmentN;&#125; 当lambda表达式的参数个数只有一个，可以省略小括号 123456param1 -&gt; &#123; statment1; statment2; // ...... return statmentN;&#125; 当lambda表达式只包含一条语句时，可以省略大括号、return和语句结尾的分号。 1param1 -&gt; statment 方法引用。 objectName::instanceMethod ClassName::staticMethod ClassName::instanceMethod 构造引用。 ClassName::new 参数lambda表达式其实是快速创建SAM接口的语法糖，原先的SAM接口都可以访问接口外部变量，因此lambda表达式也是可以访问外部变量的，不过lambda表达式访问外部变量有一个非常重要的限制：变量不可变。 在lambda中，this不是指向lambda表达式产生的那个SAM对象，而是声明它的外部对象。 Stream语法 红色框中的语句是一个Stream的生命开始的地方，负责创建一个Stream实例；绿色框中的语句是赋予Stream灵魂的地方，把一个Stream转换成另外一个Stream，红框的语句生成的是一个包含所有nums变量的Stream，经过绿框的filter方法以后，重新生成了一个过滤掉原nums列表所有null以后的Stream；蓝色框中的语句是丰收的地方，把Stream的里面包含的内容按照某种算法来汇聚成一个值。 创建Stream 通过Stream接口的静态工厂方法 通过Collection接口的默认方法 转换Stream distinct：对于Stream中包含的元素进行去重操作（去重逻辑依赖元素的equals方法），新生成的Stream中没有重复的元素。 1234// 去重public List&lt;Integer&gt; distinct(List&lt;Integer&gt; list) &#123; return list.stream().distinct().collect(Collectors.toList());&#125; filter：对于Stream中包含的元素使用给定的过滤函数进行过滤操作，新生成的Stream只包含符合条件的元素。 1234// 过滤list，保留所有大于0的元素public List&lt;Integer&gt; filter(List&lt;Integer&gt; list) &#123; return list.stream().filter(i -&gt; i &gt; 0).collect(Collectors.toList());&#125; map: 对于Stream中包含的元素使用给定的转换函数进行转换操作，新生成的Stream只包含转换生成的元素。 1234// 将list中的元素转换为大写public List&lt;String&gt; toUpperCase(List&lt;String&gt; list) &#123; return list.stream().map(String::toUpperCase).collect(Collectors.toList());&#125; flatMap：和map类似，不同的是其每个元素转换得到的是Stream对象，会把子Stream中的元素压缩到父集合中。 peek: 生成一个包含原Stream的所有元素的新Stream，同时会提供一个消费函数（Consumer实例），新Stream每个元素被消费的时候都会执行给定的消费函数。 limit: 对一个Stream进行截断操作，获取其前N个元素，如果原Stream中包含的元素个数小于N，那就获取其所有的元素。 skip: 返回一个丢弃原Stream的前N个元素后剩下元素组成的新Stream，如果原Stream中包含的元素个数小于N，那么返回空Stream。 聚合Stream聚合数据流操作。在创建和转换阶段并不会对流数据进行处理，而是在合并阶段一次性处理。 collect: 收集数据到新的容器 123public List&lt;String&gt; collect(List&lt;Integer&gt; list) &#123; return list.stream().map(Object::toString).collect(Collectors.toList());&#125; reduce: 汇聚，可以从一组元素中生成一个值 1234// 求和public Integer sum(List&lt;Integer&gt; list) &#123; return list.stream().reduce(0 /*初始值*/, (sum /*中间值*/, num /*当前值*/) -&gt; sum + num);&#125; count: 计数 123public Long count(List&lt;Integer&gt; list) &#123; return list.stream().count();&#125; forEach: 遍历流 123public void forEach(List&lt;Integer&gt; list) &#123; list.forEach(System.out::println);&#125; findFirst: 返回第一项，返回Optional对象 123public Optional findFirst(List&lt;Integer&gt; list) &#123; return list.stream().findFirst();&#125; findAny: 返回任意一项，返回Optional对象 123public Optional findAny(List&lt;Integer&gt; list) &#123; return list.stream().findAny();&#125; allMatch: 所有元素全部匹配 123public Boolean allMatch(List&lt;Integer&gt; list) &#123; return list.stream().allMatch(i -&gt; i &gt; 0);&#125; noneMatch: 所以元素全部不匹配 123public Boolean noneMatch(List&lt;Integer&gt; list) &#123; return list.stream().noneMatch(i -&gt; i &gt; 0);&#125; anyMatch: 任意一个元素匹配 123public Boolean anyMatch(List&lt;Integer&gt; list) &#123; return list.stream().anyMatch(i -&gt; i &gt; 0);&#125;]]></content>
@@ -191,8 +204,8 @@
         <category>JVM</category>
       </categories>
       <tags>
-        <tag>性能</tag>
         <tag>GC优化</tag>
+        <tag>性能</tag>
         <tag>JVM</tag>
       </tags>
   </entry>
@@ -380,8 +393,8 @@
         <category>操作系统原理</category>
       </categories>
       <tags>
-        <tag>操作系统原理</tag>
         <tag>性能</tag>
+        <tag>操作系统原理</tag>
       </tags>
   </entry>
   <entry>
