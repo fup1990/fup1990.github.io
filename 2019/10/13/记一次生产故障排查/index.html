@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/10/13/记一次生产故障排查/dump类信息.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/13/记一次生产故障排查/cachekey.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/13/记一次生产故障排查/线程快照.png">
-<meta property="og:updated_time" content="2019-10-15T02:14:26.554Z">
+<meta property="og:updated_time" content="2019-10-15T02:16:21.479Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一次生产故障排查">
 <meta name="twitter:description" content="前言收到生产某服务多台机器报警，cpu飙到100%，系统无法正常提供服务。故开始排查问题。 分析一、分析cpu过高的原因tomcat进出把cpu占满了cpu。使用命令top top -H -p pid查到tomcat进程中相应的线程。将查到的线程号转成十六进制printf &amp;quot;%x\n&amp;quot; tid。然后使用命令jstack pid | tid -A 50查看线程快照。判断是因为频繁">
@@ -399,7 +399,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isNullOrEmpty</span><span class="params">(@Nullable String string)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> string == <span class="keyword">null</span> || string.length() == <span class="number">0</span>; <span class="comment">// string.isEmpty() in Java 6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h1><p>1、配置Mybatis一级缓存范围。因为Mybatis一级缓存无法关闭，但是可以配置其缓存范围。减少缓存对象的数量和缓存时间。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- SESSION，缓存会话内的所有sql语句结果 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- STATEMENT，每次查询结束都会清掉一级缓存 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">"localCacheScope"</span> <span class="attr">value</span>=<span class="string">"STATEMENT"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、修改bug代码，防止全表扫描。</p>
+<p>2、不要使用Strings.isNullOrEmpty()判断非空字符串。</p>
 <h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><blockquote>
 <p><a href="https://tech.meituan.com/2018/01/19/mybatis-cache.html" target="_blank" rel="noopener">https://tech.meituan.com/2018/01/19/mybatis-cache.html</a></p>
 </blockquote>
